@@ -295,7 +295,7 @@ public class TranscriptionActivity extends AppCompatActivity implements
                 message = "Network timeout";
                 break;
             case SpeechRecognizer.ERROR_NO_MATCH:
-                fOut.write(".".getBytes());
+                write(myFile,".");
                 message = "No match";
                 break;
             case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
