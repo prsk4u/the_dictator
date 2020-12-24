@@ -234,7 +234,7 @@ public class TranscriptionActivity extends AppCompatActivity implements
         Log.i(LOG_TAG, "onResults");
         ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         //returnedText.append(matches.get(0));
-        returnedText.setText(matches.get(0));
+        returnedText.append(matches.get(0)+" ");
         writeData(myFile," "+matches.get(0));
         speech.startListening(recognizerIntent);
     }
@@ -295,6 +295,7 @@ public class TranscriptionActivity extends AppCompatActivity implements
                 message = "Network timeout";
                 break;
             case SpeechRecognizer.ERROR_NO_MATCH:
+                returnedText.append(".");
                 write(myFile,".");
                 message = "No match";
                 break;
