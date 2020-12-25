@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class TranscriptionActivity extends AppCompatActivity implements
     private Intent recognizerIntent;
     private String LOG_TAG = "VoiceRecognitionActivity";
     private FileOutputStream fOut=null;
-    File myFile=null;
+
 //    AudioManager audioManager;
 
     private void resetSpeechRecognizer() {
@@ -79,8 +80,14 @@ public class TranscriptionActivity extends AppCompatActivity implements
                         System.out.println("Directory exists");
                     Bundle bundle = getIntent().getExtras();
                     String filename = bundle.getString("stuff");
-                    myFile = new File(directory, filename+"-Transcribe.txt");
-                    writeData(myFile,"\n"+ filename +" :- \n");
+                    File myFile = new File(directory, filename+"-Transcribe.txt");
+                    try {
+                        fOut=new FileOutputStream(myFile);
+                        fOut.write(("\n"+ filename +" :- \n").getBytes());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }else{
                     requestPermission();
                 }
@@ -92,8 +99,13 @@ public class TranscriptionActivity extends AppCompatActivity implements
                     System.out.println("Directory exists");
                 Bundle bundle = getIntent().getExtras();
                 String filename = bundle.getString("stuff");
-                myFile = new File(directory, filename+"-Transcribe.txt");
-                writeData(myFile,"\n"+ filename +" :- \n");
+                File myFile = new File(directory, filename+"-Transcribe.txt");
+                try {
+                    fOut=new FileOutputStream(myFile);
+                    fOut.write(("\n"+ filename +" :- \n").getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         super.onCreate(savedInstanceState);
@@ -234,8 +246,12 @@ public class TranscriptionActivity extends AppCompatActivity implements
         Log.i(LOG_TAG, "onResults");
         ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         //returnedText.append(matches.get(0));
-        returnedText.append(matches.get(0)+" ");
-        writeData(myFile," "+matches.get(0));
+        try {
+            fOut.write((matches.get(0) +" ").getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        returnedText.append(matches.get(0) +" " );
         speech.startListening(recognizerIntent);
     }
 
@@ -295,8 +311,8 @@ public class TranscriptionActivity extends AppCompatActivity implements
                 message = "Network timeout";
                 break;
             case SpeechRecognizer.ERROR_NO_MATCH:
+                fOut.write(".".getBytes());
                 returnedText.append(".");
-                write(myFile,".");
                 message = "No match";
                 break;
             case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
